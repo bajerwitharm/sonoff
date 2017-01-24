@@ -31,7 +31,7 @@
 #define MQTT_RADIATION_TOPIC "salwatorska6/" HOST_NAME "/state/radiation"
 
 
-#define MAX_LOG_ENTRY_SIZE 512
+#define MAX_LOG_ENTRY_SIZE 256
 #define L_LEVEL LOG_DEBUG ///< Minimal level of event severity to log base on syslog level
 //#define SKIP_MQTT
 

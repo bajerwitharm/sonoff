@@ -21,7 +21,7 @@ const int MOVE_DETECTOR = 14;
 void Sonoff::setup() {
     pinMode(BUTTON, INPUT);
     pinMode(MOVE_DETECTOR, INPUT);
-    digitalWrite(MOVE_DETECTOR,LOW);
+    digitalWrite(MOVE_DETECTOR,HIGH);
     pinMode(LED, OUTPUT);
     pinMode(RELAY, OUTPUT);
 }
@@ -85,13 +85,8 @@ char Sonoff::getButtonState() {
  */
 char Sonoff::getMoveDetectorState() {
   static bool oldState;
-  bool newState = (digitalRead(MOVE_DETECTOR)?true:false); 
+  bool newState = (digitalRead(MOVE_DETECTOR)?false:true); 
   bool changed = (oldState!=newState);
-  if (changed) {
-    if (newState!=((digitalRead(MOVE_DETECTOR)?true:false))) {
-      changed = false;
-    }
-  }
   oldState = newState;   
   return (newState?1:0)+((changed)?2:0);
 }
@@ -99,18 +94,32 @@ char Sonoff::getMoveDetectorState() {
 bool Sonoff::detectMovie() {
     static char countdown =10;
     char detection = getMoveDetectorState();
+
     switch(detection){
+      case 1:      
+        if (countdown==0){
 
-      case 3:      
-          L_INFO("Move detected");
-          ledOn();
-
-        countdown =10;
+        } else {
+          countdown--;
+          if (countdown==0) {
+            L_INFO("Move detected");
+            ledOn();
+          }
+        }
+          //ledOn();
         break;
-    }
-    if (countdown--==0) {
-      L_INFO("Move end");
-      ledOff();
+      case 0:    
+          if (countdown==10) {
+
+          } else {
+             countdown++;   
+             if (countdown==10) {
+                L_INFO("Move end");   
+                ledOff();    
+             }
+          }
+          //ledOff();
+        break;
     }
 }
 
@@ -127,7 +136,7 @@ void Sonoff::loop() {
         relayBlink();
         break;
     }
-      detectMovie();
+    detectMovie();
   }
 
   oldTime = newTime;

@@ -45,16 +45,15 @@ void Mqtt::setup() {
 
 
 void Mqtt::reconnect() {
-  while (!client.connected()) {
+  if (!client.connected()) {
     L_NOTICE("{\"syslog_message\":\"Connecting to %s with user %s\", \"mqtt_host\":\"%s\", \"mqtt_user\":\"%s\"}", MQTT_SERVER_HOST, MQTT_USER, MQTT_SERVER_HOST, MQTT_USER);
     if (client.connect(HOST_NAME, MQTT_USER, MQTT_PASSWORD)) {
       client.subscribe(MQTT_SUBSCRIBE_TOPIC);
       L_NOTICE("{\"syslog_message\":\"Subscribed to %s topic\", \"mqtt_subscribed_topic\":\"%s\"}", MQTT_RGB_TOPIC, MQTT_RGB_TOPIC);
     } else {
       L_ERROR("Unable to connect to %s with user %s. Reconnectiong in 1s..", HOST_NAME, MQTT_USER);
-      delay(1000);
+      delay(100);
     }
-
   }
 }
 
@@ -86,7 +85,7 @@ int Mqtt::publish_debug(const char* message) {
 int Mqtt::publish_debug(uint8_t data) {
   char tmp[6];
   sprintf(tmp, "%d", data);
-  return client.publish(MQTT_DEBUG_TOPIC, tmp, 2);
+  return client.publish(MQTT_DEBUG_TOPIC, tmp, strlen(tmp));
 }
 
 int Mqtt::publish_radiation(uint16_t radiation){
@@ -96,13 +95,13 @@ int Mqtt::publish_radiation(uint16_t radiation){
 }
 
 int Mqtt::publish_led(bool state){
-  char tmp[16];
+  char tmp[20];
   sprintf(tmp, "{\"led\":%s}", state?"true":"false");
   return client.publish(MQTT_LED_TOPIC, tmp,strlen(tmp));
 }
 
 int Mqtt::publish_relay(bool state){
-  char tmp[16];
+  char tmp[20];
   sprintf(tmp, "{\"relay\":%s}", state?"true":"false");
   return client.publish(MQTT_RELAY_TOPIC, tmp,strlen(tmp));
 }

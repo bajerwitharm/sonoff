@@ -10,8 +10,8 @@
 #include "sonoff.h"
 
 
-WiFiClient wifiClient;
 Timer1s timer;
+WiFiClient wifiClient;
 
 #ifndef SKIP_MQTT
 Mqtt mqtt;
@@ -27,12 +27,12 @@ void setup_wifi() {
   WiFi.hostname(HOST_NAME);
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    sonoff.ledBlink();
-    delay(1000);
-  }
-  sonoff.ledOn();
-  L_DEBUG("Connectted to WiFi %s",WIFI_SSID);
+//  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+ //   sonoff.ledBlink();
+ //   delay(1000);
+//  }
+//  sonoff.ledOn();
+//  L_DEBUG("Connectted to WiFi %s",WIFI_SSID);
 }
 
 /**
@@ -50,7 +50,7 @@ void setup() {
 #endif
   sonoff.setup();
   espOTA.setup();
-  L_INFO("Device startup ready");
+  //L_INFO("Device startup ready");
 }
 
 /**
