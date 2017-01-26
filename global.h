@@ -25,19 +25,19 @@
 #define MQTT_RELAY_ON_TOPIC "salwatorska6/" HOST_NAME "/control/relayOn"
 #define MQTT_RELAY_OFF_TOPIC "salwatorska6/" HOST_NAME "/control/relayOff"
 #define MQTT_RELAY_BLINK_TOPIC "salwatorska6/" HOST_NAME "/control/relayBlink"
+#define MQTT_REBOOT_TOPIC "salwatorska6/" HOST_NAME "/control/reboot"
 
 #define MQTT_STATUS_TOPIC "salwatorska6/" HOST_NAME "/status"
 #define MQTT_DEBUG_TOPIC "salwatorska6/" HOST_NAME "/debug"
-#define MQTT_RADIATION_TOPIC "salwatorska6/" HOST_NAME "/state/radiation"
 
 
 #define MAX_LOG_ENTRY_SIZE 256
-#define L_LEVEL LOG_DEBUG ///< Minimal level of event severity to log base on syslog level
+#define L_LEVEL LOG_INFO ///< Minimal level of event severity to log base on syslog level
 //#define SKIP_MQTT
 
 #define SYSLOG_IP "logger.salwatorska.pl"
 #define SYSLOG_PORT 5140
-#define USE_OWN_SYSLOG
+//#define USE_OWN_SYSLOG
 #define APPLICATON_NAME HOST_NAME
 
 
@@ -55,4 +55,5 @@
 #define OTA_HOSTNAME HOST_NAME
 
 #endif
+
 

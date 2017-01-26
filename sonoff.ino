@@ -6,9 +6,10 @@
 #include "global.h"
 #include "logger.h"
 #include "espOTA.h"
+#include "espWiFi.h"
 #include "timer1s.h"
 #include "sonoff.h"
-
+#include "relay.h"
 
 Timer1s timer;
 WiFiClient wifiClient;
@@ -19,38 +20,28 @@ Mqtt mqtt;
 
 Sonoff sonoff;
 EspOTA espOTA;
-
-/**
- * WiFi setup
- */
-void setup_wifi() {
-  WiFi.hostname(HOST_NAME);
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-//  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
- //   sonoff.ledBlink();
- //   delay(1000);
-//  }
-//  sonoff.ledOn();
-//  L_DEBUG("Connectted to WiFi %s",WIFI_SSID);
-}
+EspWiFi espWiFi;
+Relay relay;
 
 /**
  * Add here all initialization function of submodules
  */
 void setup() {
+//   wdt_disable();
+   sonoff.setup();
+   sonoff.ledOff();
 #ifdef USE_CONSOLE
   Serial.begin(CONSOLE_SPEED);
 #endif
-  delay(1000);
-  setup_wifi();
+  espWiFi.setup();
   timer.setup();
 #ifndef SKIP_MQTT
   mqtt.setup();
 #endif
-  sonoff.setup();
   espOTA.setup();
-  //L_INFO("Device startup ready");
+  relay.setup();
+  sonoff.ledOn();
+  L_INFO("Device startup ready");
 }
 
 /**
@@ -62,4 +53,7 @@ void loop() {
 #endif
   sonoff.loop();
   espOTA.loop();
+  espWiFi.loop();
+  relay.loop();
 }
+

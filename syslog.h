@@ -16,3 +16,4 @@
 int syslog(int level, const char * format, ...);
 
 #endif
+

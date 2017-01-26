@@ -1,5 +1,4 @@
 #pragma once
-#include <stdint.h>
 
 class Sonoff
 {
@@ -11,8 +10,6 @@ class Sonoff
     void ledOn();
     void ledOff();
     void ledBlink();
-    void relayOn();
-    void relayOff();
-    void relayBlink();
-    bool detectMovie();
+    void detectMovie();
 };
+

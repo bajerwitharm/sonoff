@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "logger.h"
 #include "sonoff.h"
+#include "relay.h"
 
 #ifndef SKIP_MQTT
 #include "mqtt.h"
@@ -10,11 +11,11 @@ extern Mqtt mqtt;
 
 #define INVERT_BUTTON true
 extern Timer1s timer;
+extern Relay relay;
 
-const int BUTTON = 0;
-const int LED = 13;
-const int RELAY = 12;
-const int MOVE_DETECTOR = 14;
+#define BUTTON 0
+#define LED 13
+#define MOVE_DETECTOR 14
 
 
 
@@ -23,25 +24,6 @@ void Sonoff::setup() {
     pinMode(MOVE_DETECTOR, INPUT);
     digitalWrite(MOVE_DETECTOR,HIGH);
     pinMode(LED, OUTPUT);
-    pinMode(RELAY, OUTPUT);
-}
-
-void Sonoff::relayOn() {
-  digitalWrite(RELAY , 0);
-  mqtt.publish_relay(true);
-  L_INFO("Relay ON");
-}
-
-void Sonoff::relayOff() {
-  digitalWrite(RELAY , 1);
-  mqtt.publish_relay(false);
-  L_INFO("Relay OFF");
-}
-
-void Sonoff::relayBlink() {
-  digitalWrite(RELAY, !digitalRead(RELAY));
-  mqtt.publish_relay(digitalRead(RELAY)?false:true);
-  L_INFO("Relay blink");
 }
 
 void Sonoff::ledOn() {
@@ -91,7 +73,7 @@ char Sonoff::getMoveDetectorState() {
   return (newState?1:0)+((changed)?2:0);
 }
 
-bool Sonoff::detectMovie() {
+void Sonoff::detectMovie() {
     static char countdown =10;
     char detection = getMoveDetectorState();
 
@@ -133,11 +115,12 @@ void Sonoff::loop() {
         break;
       case 3:      
         L_INFO("Button pressed");
-        relayBlink();
+        relay.blink();
         break;
     }
-    detectMovie();
+    detectMovie(); 
+    oldTime = newTime;
   }
 
-  oldTime = newTime;
 }
+

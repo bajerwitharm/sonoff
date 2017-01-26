@@ -1,11 +1,19 @@
 #include "Logger.h"
 #include "Arduino.h"
 #include <cstdio>
-#include <ctime>
+//#include <ctime>
 #ifndef SKIP_MQTT
 #include "mqtt.h"
 extern Mqtt mqtt;
 #endif
+
+
+void Logger::dummy(int level, const char* location, const char* file, const char * format, ...)
+{
+
+}
+
+#if L_LEVEL>=LOG_CRIT
 /**
  Adds new event to log
 
@@ -22,10 +30,6 @@ void Logger::add(int level, const char* location, const char* file, const char *
   va_end(argptr);
 }
 
-void Logger::dummy(int level, const char* location, const char* file, const char * format, ...)
-{
-
-}
 
 void Logger::storeEvent(const int level, const char* location, const char* file, const char*& format, va_list& argptr) {
   char message[MAX_LOG_ENTRY_SIZE];
@@ -40,6 +44,7 @@ void Logger::storeEvent(const int level, const char* location, const char* file,
   writeToSyslog(message, location, file , level);
 #endif
 }
+#endif
 
 void Logger::prepareEntry( char* buffer, const char * format, ... )
 {
@@ -63,12 +68,13 @@ void Logger::writeToMqtt(const char* message, const char* location, const char* 
 }
 
 void Logger::writeToSyslog(const char* message, const char* location, const char* file, int level) {
+#ifdef USE_SYSLOG
   if (message[0] == '{') {
     syslog(level, "{\"location\":\"%s\", \"syslog_message\":%s, \"file\":\"%s\", \"syslog_program\":\"%s\"}", location, message, file, APPLICATON_NAME);
   } else {
     syslog(level, "{\"location\":\"%s\", \"syslog_message\":\"%s\", \"file\":\"%s\", \"syslog_program\":\"%s\"}", location, message, file, APPLICATON_NAME);
   } 
-
+#endif
 }
 
 /**
@@ -94,4 +100,5 @@ const char* Logger::getLevel(const int level)
 const char* Logger::exeptionToString(const char* message,...) {
   return message;
 }
+
 

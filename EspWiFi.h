@@ -1,7 +1,6 @@
 #pragma once
-#include <stdint.h>
 
-class EspOTA
+class EspWiFi
 {
   public:
     void setup();

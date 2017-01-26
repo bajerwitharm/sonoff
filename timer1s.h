@@ -1,6 +1,8 @@
 #pragma once
 #include <stdint.h>
-typedef int (*timerCallback)(long);
+
+#define TRIGGER_TIME  (41660000) //0.5s
+#define SECONDS_AS_TICKS(x) (x<<1)
 
 class Timer1s
 {
@@ -8,8 +10,8 @@ class Timer1s
     void setup();
     void stop();
     long getTicks();
-    void setTimerCallback(timerCallback function);
 };
+
 
 
 

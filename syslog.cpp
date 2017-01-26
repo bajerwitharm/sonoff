@@ -1,4 +1,5 @@
 #include "global.h"
+
 #ifdef USE_OWN_SYSLOG
 #include <cstring>
 #include <cstdlib>
@@ -27,5 +28,6 @@ void syslog(...) {
 
 }
 #endif
+
 
 

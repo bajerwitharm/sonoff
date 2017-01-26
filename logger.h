@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdarg>
-#include <exception>
+//#include <exception>
 #include "syslog.h"
 #include "global.h"
 
@@ -16,7 +16,7 @@ typedef int (*console_writter_ptr) (const char*);
 #if L_LEVEL>LOG_CRIT
 #define L_THROW(exception) {Logger::add(LOG_CRIT, FUNCTION_NAME, __FILE_AND_LINE__, Logger::exeptionToString(exception)); throw exception;}
 #else
-#define L_THROW(exception) throw exception;
+//#define L_THROW(exception) throw exception;
 #endif
 
 
@@ -54,21 +54,26 @@ typedef int (*console_writter_ptr) (const char*);
 class Logger
 {
 public:
-  static void add(int level, const char* location, const char* file, const char * format, ...);
+
   static void dummy(int level, const char* location, const char* file, const char * format, ...);
-  static const char* exeptionToString(std::exception except);
+//  static const char* exeptionToString(std::exception except);
   static const char* exeptionToString(const char* message,...);
   static void prepareEntry( char* buffer, const char * format, ... );
   static console_writter_ptr console_writter;
+#if L_LEVEL>=LOG_CRIT
+  static void add(int level, const char* location, const char* file, const char * format, ...);
+#endif
 private:
   static char * getDateAndTime();
   static const char * getLevel(const int level);
   static void writeToConsole(const char * message, const char* location = "", const char* file = "", const int level = LOG_INFO);
   static void writeToMqtt(const char * message, const char* location = "", const char* file = "", const int level = LOG_INFO);
   static void writeToSyslog(const char * message, const char * location = "", const char* file = "", int level = LOG_INFO);
+#if L_LEVEL>=LOG_CRIT
   static void storeEvent(const int level, const char* location, const char* file, const char *& format, va_list& argptr);
-
+#endif
 
 };
+
 
 

@@ -2,13 +2,8 @@
 #include "Arduino.h"
 static volatile long ticks = 0;
 
-timerCallback callback = nullptr;
-
-#define TRIGGER_TIME  (41660000) //0.5s
-
 void inline handler (void) {
   ticks++;
-  if (callback != nullptr) callback(ticks);
   timer0_write(ESP.getCycleCount() + TRIGGER_TIME);
 }
 
@@ -27,10 +22,6 @@ void Timer1s::stop() {
 
 long Timer1s::getTicks() {
   return ticks;
-}
-
-void Timer1s::setTimerCallback(timerCallback function) {
-  callback = function;
 }
 
 
