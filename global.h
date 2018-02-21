@@ -32,7 +32,7 @@
 
 
 #define MAX_LOG_ENTRY_SIZE 256
-#define L_LEVEL LOG_INFO ///< Minimal level of event severity to log base on syslog level
+#define L_LEVEL LOG_ERROR ///< Minimal level of event severity to log base on syslog level
 //#define SKIP_MQTT
 
 #define SYSLOG_IP "logger.salwatorska.pl"

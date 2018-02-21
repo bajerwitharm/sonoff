@@ -8,11 +8,13 @@
 #include "sonoff.h"
 #include "timer1s.h"
 #include "relay.h"
+#include "led.h"
 
 extern WiFiClient wifiClient;
 extern Sonoff sonoff;
 extern Timer1s timer;
 extern Relay relay;
+extern Led led;
 
 
 PubSubClient client;
@@ -22,13 +24,13 @@ void mqtt_callback(char* topic, unsigned char* payload, unsigned int length) {
   String data = (const char*)payload;
   L_DEBUG("MQTT payload:%s topic:%s",payload,topic);
   if (strncmp(topic, MQTT_LED_ON_TOPIC, strlen(MQTT_LED_ON_TOPIC)) == 0) {
-    sonoff.ledOn();
+    led.ledOn();
   }
   else if (strncmp(topic, MQTT_LED_OFF_TOPIC, strlen(MQTT_LED_OFF_TOPIC)) == 0) {
-    sonoff.ledOff();
+    led.ledOff();
   }
   else if (strncmp(topic, MQTT_LED_BLINK_TOPIC, strlen(MQTT_LED_BLINK_TOPIC)) == 0) {
-    sonoff.ledBlink();
+    led.ledBlink();
   }
   else if (strncmp(topic, MQTT_RELAY_BLINK_TOPIC, strlen(MQTT_RELAY_BLINK_TOPIC)) == 0) {
     relay.blink(data.c_str());

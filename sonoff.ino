@@ -10,6 +10,7 @@
 #include "timer1s.h"
 #include "sonoff.h"
 #include "relay.h"
+#include "led.h"
 
 Timer1s timer;
 WiFiClient wifiClient;
@@ -22,6 +23,7 @@ Sonoff sonoff;
 EspOTA espOTA;
 EspWiFi espWiFi;
 Relay relay;
+Led led;
 
 /**
  * Add here all initialization function of submodules
@@ -29,7 +31,8 @@ Relay relay;
 void setup() {
 //   wdt_disable();
    sonoff.setup();
-   sonoff.ledOff();
+   led.setup();
+   led.ledOff();
 #ifdef USE_CONSOLE
   Serial.begin(CONSOLE_SPEED);
 #endif
@@ -40,7 +43,7 @@ void setup() {
 #endif
   espOTA.setup();
   relay.setup();
-  sonoff.ledOn();
+  led.ledOn();
   L_INFO("Device startup ready");
 }
 
@@ -55,5 +58,6 @@ void loop() {
   espOTA.loop();
   espWiFi.loop();
   relay.loop();
+  led.loop();
 }
 

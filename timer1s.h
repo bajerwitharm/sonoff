@@ -1,8 +1,7 @@
 #pragma once
-#include <stdint.h>
 
-#define TRIGGER_TIME  (41660000) //0.5s
-#define SECONDS_AS_TICKS(x) (x<<1)
+#define TRIGGER_TIME  (41660000/2) //0.5s
+#define SECONDS_AS_TICKS(x) (x<<2)
 
 class Timer1s
 {

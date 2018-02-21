@@ -4,12 +4,14 @@
 #include "logger.h"
 #include "global.h"
 #include "timer1s.h"
+#include "led.h"
 
 #define RELAY_PIN 12
 #define RELAY_ON 1
 #define RELAY_OFF 0
 
 extern Timer1s timer;
+extern Led led;
 
 #ifndef SKIP_MQTT
 #include "mqtt.h"
@@ -51,6 +53,7 @@ void Relay::setOff() {
   digitalWrite(RELAY_PIN, RELAY_OFF);
   mqtt.publish_relay(false);
   L_INFO("Relay OFF");
+  led.ledOff();
 }
 
 void Relay::blink(const char* payload) {
@@ -66,7 +69,8 @@ void Relay::setOffIn(int seconds) {
   if (seconds!=0) {
       offIn = SECONDS_AS_TICKS(seconds);
       L_DEBUG("Relay will be OFF in %d s", seconds);
-  }
+      led.startBlink(4);
+  } else led.ledOn();
 }
 
 

@@ -14,7 +14,6 @@ extern Timer1s timer;
 extern Relay relay;
 
 #define BUTTON 0
-#define LED 13
 #define MOVE_DETECTOR 14
 
 
@@ -23,25 +22,6 @@ void Sonoff::setup() {
     pinMode(BUTTON, INPUT);
     pinMode(MOVE_DETECTOR, INPUT);
     digitalWrite(MOVE_DETECTOR,HIGH);
-    pinMode(LED, OUTPUT);
-}
-
-void Sonoff::ledOn() {
-  digitalWrite(LED , 0);
-  mqtt.publish_led(true);
-  L_INFO("LED ON");
-}
-
-void Sonoff::ledOff() {
-  digitalWrite(LED , 1);
-  mqtt.publish_led(false);
-  L_INFO("LED OFF");
-}
-
-void Sonoff::ledBlink() {
-  digitalWrite(LED , !digitalRead(LED));
-  mqtt.publish_led(digitalRead(LED)?false:true);
-  L_INFO("LED blink");
 }
 
 /**
@@ -85,7 +65,7 @@ void Sonoff::detectMovie() {
           countdown--;
           if (countdown==0) {
             L_INFO("Move detected");
-            ledOn();
+          //  led.ledOn();
           }
         }
           //ledOn();
@@ -97,7 +77,7 @@ void Sonoff::detectMovie() {
              countdown++;   
              if (countdown==10) {
                 L_INFO("Move end");   
-                ledOff();    
+             //   led.ledOff();    
              }
           }
           //ledOff();
