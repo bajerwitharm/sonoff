@@ -36,7 +36,8 @@ void mqtt_callback(char* topic, unsigned char* payload, unsigned int length) {
     relay.blink(data.c_str());
   }  
   else if (strncmp(topic, MQTT_RELAY_ON_TOPIC, strlen(MQTT_RELAY_ON_TOPIC)) == 0) {
-    relay.setOn(data.c_str());
+    relay.setOn();
+    relay.setOffIn(relay.parseOffIn(data.c_str()));
   }
   else if (strncmp(topic, MQTT_RELAY_OFF_TOPIC, strlen(MQTT_RELAY_OFF_TOPIC)) == 0) {
     relay.setOff();
@@ -110,9 +111,11 @@ int Mqtt::publish_led(bool state){
 }
 
 int Mqtt::publish_relay(bool state){
+  #ifndef SKIP_MQTT
   char tmp[20];
   sprintf(tmp, "{\"relay\":%s}", state?"true":"false");
   return client.publish(MQTT_RELAY_TOPIC, tmp,strlen(tmp));
+  #endif
 }
 
 

@@ -1,17 +1,19 @@
 #pragma once
+#include "global.h"
 
 class Relay
 {
   public:
     void setup();
-    void setOn(const char* payload="");
+    void setOn();
     void setOff();
     void blink(const char* payload="");
     void loop();
-  private:
-    void setOffIn(int seconds);
     int parseOffIn(const char* payload);
-    volatile int defaultOffIn = 10;
+    void setOffIn(int seconds);
+  private:
+
+    volatile int defaultOffIn = ON_AFTER_BUTTON;
     volatile int offIn = 0;
 
 };

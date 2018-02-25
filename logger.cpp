@@ -1,12 +1,13 @@
 #include "Logger.h"
 #include "Arduino.h"
 #include <cstdio>
+#include "timer1s.h"
 //#include <ctime>
 #ifndef SKIP_MQTT
 #include "mqtt.h"
 extern Mqtt mqtt;
 #endif
-
+extern Timer1s timer;
 
 void Logger::dummy(int level, const char* location, const char* file, const char * format, ...)
 {
@@ -63,7 +64,9 @@ void Logger::writeToConsole(const char* message, const char* location, const cha
 void Logger::writeToMqtt(const char* message, const char* location, const char* file, int level) {
   char tmp[MAX_LOG_ENTRY_SIZE];
   prepareEntry(tmp, "{\"level\":\"%s\",\"location\":\"%s\", \"syslog_message\":\"%s\"}", getLevel(level), location, message);  
+  #ifndef SKIP_MQTT
   mqtt.publish_debug(tmp);
+  #endif
 
 }
 
@@ -83,8 +86,7 @@ void Logger::writeToSyslog(const char* message, const char* location, const char
 char* Logger::getDateAndTime()
 {
   static char result[6];
-  static int no;
-  sprintf(result, " %d",no++);
+  sprintf(result, " %d",timer.getTicks());
   return result;
 }
 

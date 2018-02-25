@@ -2,6 +2,8 @@
 #include "logger.h"
 #include "espOTA.h"
 #include <ArduinoOTA.h>
+#include <ESP8266mDNS.h>
+#include <WiFiUdp.h>
 #include "timer1s.h"
 extern Timer1s timer;
 

@@ -13,6 +13,8 @@
 extern Timer1s timer;
 extern Led led;
 
+bool relayState;
+
 #ifndef SKIP_MQTT
 #include "mqtt.h"
 extern Mqtt mqtt;
@@ -20,7 +22,7 @@ extern Mqtt mqtt;
 
 void Relay::setup() {
   pinMode(RELAY_PIN, OUTPUT);
-  digitalWrite(RELAY_PIN, RELAY_OFF);
+  setOff();
 }
 
 void Relay::loop() {
@@ -42,18 +44,27 @@ int Relay::parseOffIn(const char* payload) {
   return atoi(payload);
 }
 
-void Relay::setOn(const char* payload) {
+void Relay::setOn() {
   digitalWrite(RELAY_PIN , RELAY_ON);
-  mqtt.publish_relay(true);
-  L_INFO("Relay ON");
-  setOffIn(parseOffIn(payload));
+  offIn = 0;
+  if (relayState!=true) {
+    #ifndef SKIP_MQTT
+    mqtt.publish_relay(true);
+    #endif
+    L_INFO("Relay ON");
+    relayState = true;
+  }
 }
 
 void Relay::setOff() {
   digitalWrite(RELAY_PIN, RELAY_OFF);
-  mqtt.publish_relay(false);
-  L_INFO("Relay OFF");
-  led.ledOff();
+  if (relayState!=false) {
+    #ifndef SKIP_MQTT
+    mqtt.publish_relay(false);
+    #endif
+    L_INFO("Relay OFF");
+    relayState = false;
+  }
 }
 
 void Relay::blink(const char* payload) {
@@ -61,16 +72,16 @@ void Relay::blink(const char* payload) {
   if (state==RELAY_ON) {
     setOff();
   } else {
-    setOn(payload);
+    setOn();
+    setOffIn(parseOffIn(payload));
   }
 }
 
 void Relay::setOffIn(int seconds) {
   if (seconds!=0) {
       offIn = SECONDS_AS_TICKS(seconds);
-      L_DEBUG("Relay will be OFF in %d s", seconds);
-      led.startBlink(4);
-  } else led.ledOn();
+      //led.startBlink(4);
+  } //else led.ledOn();
 }
 
 

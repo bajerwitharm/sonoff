@@ -2,10 +2,10 @@
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
-//#define WIFI_SSID "Salwatorska6admin"
-//#define WIFI_SSID "Salwatorska6admi"
+#define ON_AFTER_BUTTON 10
+#define ON_AFTER_MOTION 10
+
 #define WIFI_SSID "TP-LINK_ANIA"
-//#define WIFI_PASSWORD "Administrator@main6"
 #define WIFI_PASSWORD "KochamAnie1"
 #define MQTT_SERVER_HOST "mqtt.salwatorska.pl"
 #define MQTT_SERVER_PORT 1883
@@ -32,7 +32,7 @@
 
 
 #define MAX_LOG_ENTRY_SIZE 256
-#define L_LEVEL LOG_ERROR ///< Minimal level of event severity to log base on syslog level
+#define L_LEVEL LOG_DEBUG ///< Minimal level of event severity to log base on syslog level
 //#define SKIP_MQTT
 
 #define SYSLOG_IP "logger.salwatorska.pl"
@@ -45,8 +45,10 @@
  * Logger related settings
  */
 //#define USE_SYSLOG ///< Logs will be saved to system systlog
-//#define USE_CONSOLE ///< Logs will be printed to console
+#define USE_CONSOLE ///< Logs will be printed to console
+#ifndef SKIP_MQTT
 #define USE_MQTT ///< Logs will be printed to mqtt
+#endif
 #define CONSOLE_SPEED 9600
 
 /**

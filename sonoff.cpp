@@ -3,11 +3,13 @@
 #include "logger.h"
 #include "sonoff.h"
 #include "relay.h"
+#include "led.h"
 
 #ifndef SKIP_MQTT
 #include "mqtt.h"
 extern Mqtt mqtt;
 #endif
+extern Led led;
 
 #define INVERT_BUTTON true
 extern Timer1s timer;
@@ -20,8 +22,8 @@ extern Relay relay;
 
 void Sonoff::setup() {
     pinMode(BUTTON, INPUT);
-    pinMode(MOVE_DETECTOR, INPUT);
-    digitalWrite(MOVE_DETECTOR,HIGH);
+    pinMode(MOVE_DETECTOR, INPUT_PULLUP);
+  //  digitalWrite(MOVE_DETECTOR,HIGH);
 }
 
 /**
@@ -47,40 +49,23 @@ char Sonoff::getButtonState() {
  */
 char Sonoff::getMoveDetectorState() {
   static bool oldState;
-  bool newState = (digitalRead(MOVE_DETECTOR)?false:true); 
+  bool newState = (digitalRead(MOVE_DETECTOR)?true:false); 
   bool changed = (oldState!=newState);
   oldState = newState;   
   return (newState?1:0)+((changed)?2:0);
 }
 
 void Sonoff::detectMovie() {
-    static char countdown =10;
     char detection = getMoveDetectorState();
 
     switch(detection){
-      case 1:      
-        if (countdown==0){
-
-        } else {
-          countdown--;
-          if (countdown==0) {
-            L_INFO("Move detected");
-          //  led.ledOn();
-          }
-        }
-          //ledOn();
+      case 1+2:      
+        relay.setOn();
+        led.ledOn();
         break;
-      case 0:    
-          if (countdown==10) {
-
-          } else {
-             countdown++;   
-             if (countdown==10) {
-                L_INFO("Move end");   
-             //   led.ledOff();    
-             }
-          }
-          //ledOff();
+      case 0+2:    
+         led.ledOff();
+         relay.setOffIn(ON_AFTER_MOTION);
         break;
     }
 }
@@ -98,9 +83,8 @@ void Sonoff::loop() {
         relay.blink();
         break;
     }
-    detectMovie(); 
     oldTime = newTime;
   }
-
+  detectMovie(); 
 }
 
