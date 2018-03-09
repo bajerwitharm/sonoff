@@ -13,6 +13,7 @@
 extern Timer1s timer;
 extern Led led;
 
+bool alwaysOn;
 bool relayState;
 
 #ifndef SKIP_MQTT
@@ -22,6 +23,7 @@ extern Mqtt mqtt;
 
 void Relay::setup() {
   pinMode(RELAY_PIN, OUTPUT);
+  alwaysOn = false;
   setOff();
 }
 
@@ -56,6 +58,15 @@ void Relay::setOn() {
   }
 }
 
+void Relay::setAlwaysOnFlag() {
+    alwaysOn = true;
+    L_INFO("Always on");
+}
+
+void Relay::clearAlwaysOnFlag() {
+    alwaysOn = false;
+}
+  
 void Relay::setOff() {
   digitalWrite(RELAY_PIN, RELAY_OFF);
   if (relayState!=false) {
@@ -64,6 +75,7 @@ void Relay::setOff() {
     #endif
     L_INFO("Relay OFF");
     relayState = false;
+    alwaysOn = false;
   }
 }
 
@@ -79,9 +91,12 @@ void Relay::blink(const char* payload) {
 
 void Relay::setOffIn(int seconds) {
   if (seconds!=0) {
+    if (!alwaysOn) {
       offIn = SECONDS_AS_TICKS(seconds);
-      //led.startBlink(4);
-  } //else led.ledOn();
+    }
+  } else {
+      setAlwaysOnFlag();
+  }
 }
 
 

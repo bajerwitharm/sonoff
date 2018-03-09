@@ -2,30 +2,31 @@
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
-#define ON_AFTER_BUTTON 10
-#define ON_AFTER_MOTION 10
+#define ON_AFTER_BUTTON 30 ///< How long light on after button pressed
+#define ON_AFTER_MOTION 30 ///< How long light on after motion detected
+#define ALWAYS_ON_AFTER 10 ///< How long need to press button until light will be always on
+
+#define BUTTON 0            ///< GPIO of button
+#define MOVE_DETECTOR_1 14  ///< GPIO of motion detector
+#define MOVE_DETECTOR_2 1   ///< GPIO of motion detector 2 (if available)
 
 #define WIFI_SSID "TP-LINK_ANIA"
+//#define WIFI_SSID "Salwatorska6admin"
 #define WIFI_PASSWORD "KochamAnie1"
+//#define WIFI_PASSWORD "Administrator@main6"
 #define MQTT_SERVER_HOST "mqtt.salwatorska.pl"
 #define MQTT_SERVER_PORT 1883
 
 #define MQTT_USER "Administracja"
 #define MQTT_PASSWORD "Administrator@main6"
-#define HOST_NAME "sonoff"
-#define MQTT_SUBSCRIBE_TOPIC "salwatorska6/" HOST_NAME "/control/#"
-#define MQTT_RGB_TOPIC "salwatorska6/" HOST_NAME "/control/rgb"
+#define HOST_NAME "rowerownia"
+#define MQTT_SUBSCRIBE_TOPIC "salwatorska6/" HOST_NAME "/control/#"  
 
-#define MQTT_LED_TOPIC "salwatorska6/" HOST_NAME "/state/led"
-#define MQTT_LED_ON_TOPIC "salwatorska6/" HOST_NAME "/control/ledOn"
-#define MQTT_LED_OFF_TOPIC "salwatorska6/" HOST_NAME "/control/ledOff"
-#define MQTT_LED_BLINK_TOPIC "salwatorska6/" HOST_NAME "/control/ledBlink"
-
-#define MQTT_RELAY_TOPIC "salwatorska6/" HOST_NAME "/state/relay"
-#define MQTT_RELAY_ON_TOPIC "salwatorska6/" HOST_NAME "/control/relayOn"
-#define MQTT_RELAY_OFF_TOPIC "salwatorska6/" HOST_NAME "/control/relayOff"
-#define MQTT_RELAY_BLINK_TOPIC "salwatorska6/" HOST_NAME "/control/relayBlink"
-#define MQTT_REBOOT_TOPIC "salwatorska6/" HOST_NAME "/control/reboot"
+#define MQTT_RELAY_TOPIC "salwatorska6/" HOST_NAME "/state/relay"               ///< Where relay state will be write
+#define MQTT_RELAY_ON_TOPIC "salwatorska6/" HOST_NAME "/control/relayOn"        ///< Need to write number of seconds how long light should be on (0 for infinite)
+#define MQTT_RELAY_OFF_TOPIC "salwatorska6/" HOST_NAME "/control/relayOff"      ///< Any write will off the light
+#define MQTT_RELAY_BLINK_TOPIC "salwatorska6/" HOST_NAME "/control/relayBlink"  ///< Any write will blink the light
+#define MQTT_REBOOT_TOPIC "salwatorska6/" HOST_NAME "/control/reboot"           ///< Any write will force reboot
 
 #define MQTT_STATUS_TOPIC "salwatorska6/" HOST_NAME "/status"
 #define MQTT_DEBUG_TOPIC "salwatorska6/" HOST_NAME "/debug"

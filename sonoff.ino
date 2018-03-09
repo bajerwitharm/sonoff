@@ -1,3 +1,4 @@
+
  
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
@@ -32,7 +33,10 @@ void setup() {
   espWiFi.setup();
   espOTA.setup();
   relay.setup();
-  sonoff.setup();
+  sonoff.setup();  
+  #ifndef SKIP_MQTT
+  mqtt.setup();
+  #endif
   #ifdef USE_CONSOLE
   Serial.begin(CONSOLE_SPEED);
   #endif
@@ -41,9 +45,13 @@ void setup() {
 }
  
 void loop() {
+  #ifndef SKIP_MQTT
+  mqtt.loop();
+  #endif
   led.loop();
   espWiFi.loop();
   espOTA.loop();
   sonoff.loop();
   relay.loop();
+
 }

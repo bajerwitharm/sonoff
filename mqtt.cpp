@@ -16,23 +16,13 @@ extern Timer1s timer;
 extern Relay relay;
 extern Led led;
 
-
 PubSubClient client;
 
 void mqtt_callback(char* topic, unsigned char* payload, unsigned int length) {
   payload[length] = 0;
   String data = (const char*)payload;
   L_DEBUG("MQTT payload:%s topic:%s",payload,topic);
-  if (strncmp(topic, MQTT_LED_ON_TOPIC, strlen(MQTT_LED_ON_TOPIC)) == 0) {
-    led.ledOn();
-  }
-  else if (strncmp(topic, MQTT_LED_OFF_TOPIC, strlen(MQTT_LED_OFF_TOPIC)) == 0) {
-    led.ledOff();
-  }
-  else if (strncmp(topic, MQTT_LED_BLINK_TOPIC, strlen(MQTT_LED_BLINK_TOPIC)) == 0) {
-    led.ledBlink();
-  }
-  else if (strncmp(topic, MQTT_RELAY_BLINK_TOPIC, strlen(MQTT_RELAY_BLINK_TOPIC)) == 0) {
+  if (strncmp(topic, MQTT_RELAY_BLINK_TOPIC, strlen(MQTT_RELAY_BLINK_TOPIC)) == 0) {
     relay.blink(data.c_str());
   }  
   else if (strncmp(topic, MQTT_RELAY_ON_TOPIC, strlen(MQTT_RELAY_ON_TOPIC)) == 0) {
@@ -58,13 +48,12 @@ void Mqtt::setup() {
 
 void Mqtt::reconnect() {
   static int lastTry;
-  if ((WiFi.status() != WL_CONNECTED)&&(!client.connected())) {
+  if ((WiFi.status() == WL_CONNECTED)&&(!client.connected())) {
     int newTry = timer.getTicks();
     if (lastTry != newTry) {
-      L_NOTICE("{\"syslog_message\":\"Connecting to %s with user %s\", \"mqtt_host\":\"%s\", \"mqtt_user\":\"%s\"}", MQTT_SERVER_HOST, MQTT_USER, MQTT_SERVER_HOST, MQTT_USER);
+      L_NOTICE("Connecting to %s with user %s", MQTT_SERVER_HOST, MQTT_USER);
       if (client.connect(HOST_NAME, MQTT_USER, MQTT_PASSWORD)) {
         client.subscribe(MQTT_SUBSCRIBE_TOPIC);
-        L_NOTICE("{\"syslog_message\":\"Subscribed to %s topic\", \"mqtt_subscribed_topic\":\"%s\"}", MQTT_RGB_TOPIC, MQTT_RGB_TOPIC);
       } else {
         L_ERROR("Unable to connect to %s with user %s. Reconnectiong in 1s..", HOST_NAME, MQTT_USER);
       }
@@ -102,12 +91,6 @@ int Mqtt::publish_debug(uint8_t data) {
   char tmp[6];
   sprintf(tmp, "%d", data);
   return client.publish(MQTT_DEBUG_TOPIC, tmp, strlen(tmp));
-}
-
-int Mqtt::publish_led(bool state){
-  char tmp[20];
-  sprintf(tmp, "{\"led\":%s}", state?"true":"false");
-  return client.publish(MQTT_LED_TOPIC, tmp,strlen(tmp));
 }
 
 int Mqtt::publish_relay(bool state){

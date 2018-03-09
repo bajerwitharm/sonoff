@@ -10,6 +10,8 @@ class Relay
     void blink(const char* payload="");
     void loop();
     int parseOffIn(const char* payload);
+    void setAlwaysOnFlag();
+    void clearAlwaysOnFlag();
     void setOffIn(int seconds);
   private:
 
